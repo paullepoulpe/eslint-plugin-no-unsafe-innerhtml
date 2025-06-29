@@ -1,6 +1,8 @@
-module.exports = {
+import noUnsafeInnerhtml from './rules/no-unsafe-innerhtml';
+
+const plugin = {
   rules: {
-    'no-unsafe-innerhtml': require('./rules/no-unsafe-innerhtml')
+    'no-unsafe-innerhtml': noUnsafeInnerhtml
   },
   configs: {
     recommended: {
@@ -11,3 +13,5 @@ module.exports = {
     }
   }
 };
+
+export = plugin;

@@ -1,5 +1,5 @@
-const { RuleTester } = require('eslint');
-const rule = require('../rules/no-unsafe-innerhtml');
+import { RuleTester } from 'eslint';
+import rule from '../rules/no-unsafe-innerhtml';
 
 const ruleTester = new RuleTester({
   parserOptions: {
