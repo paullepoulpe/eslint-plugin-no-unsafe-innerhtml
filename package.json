@@ -9,7 +9,13 @@
     "test": "npm run build && jest",
     "prepublishOnly": "npm run build"
   },
-  "keywords": ["eslint", "eslintplugin", "security", "innerHTML", "safevalues"],
+  "keywords": [
+    "eslint",
+    "eslintplugin",
+    "security",
+    "innerHTML",
+    "safevalues"
+  ],
   "author": "",
   "license": "MIT",
   "peerDependencies": {
@@ -24,5 +30,8 @@
     "jest": "^29.0.0",
     "ts-jest": "^29.0.0",
     "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "safevalues": "^1.2.0"
   }
 }

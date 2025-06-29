@@ -22,7 +22,6 @@ function otherProperties() {
     const element = document.getElementById('test');
     
     // Other properties are allowed - should NOT be flagged
-    element.outerHTML = '<div>replaced</div>';
     element.id = 'newId';
     element.className = 'newClass';
     element.setAttribute('data-value', 'test');

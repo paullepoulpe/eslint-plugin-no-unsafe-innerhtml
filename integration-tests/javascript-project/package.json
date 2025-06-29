@@ -10,9 +10,9 @@
   },
   "devDependencies": {
     "eslint": "^8.0.0",
-    "eslint-plugin-no-unsafe-innerhtml": "file:../"
+    "eslint-plugin-no-unsafe-innerhtml": "file:../../"
   },
   "dependencies": {
-    "safevalues": "^0.3.4"
+    "safevalues": "^1.2.0"
   }
 }
