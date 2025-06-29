@@ -1,4 +1,4 @@
-import { Rule, SourceCode } from 'eslint';
+import { Rule } from 'eslint';
 import {
   Node,
   AssignmentExpression,
@@ -7,6 +7,8 @@ import {
   ImportDeclaration,
   ImportSpecifier,
   Identifier,
+  Expression,
+  Super,
 } from 'estree';
 
 const rule: Rule.RuleModule = {
@@ -32,14 +34,13 @@ const rule: Rule.RuleModule = {
           isIdentifier(node.left.property) &&
           node.left.property.name === 'innerHTML'
         ) {
-          const sourceCode = context.sourceCode;
-          const rightText = sourceCode.getText(node.right);
-
+          const element = node.left.object;
+          const value = node.right;
           context.report({
             node,
             message:
               'Unsafe innerHTML assignment. Consider using safevalues library for XSS protection.',
-            suggest: getSuggestions(node, node.left, rightText, sourceCode),
+            suggest: getSuggestions(node, element, value, context),
           });
         }
       },
@@ -67,12 +68,15 @@ function isImportSpecifier(node: Node): node is ImportSpecifier {
 
 function getSuggestions(
   node: AssignmentExpression,
-  leftExpression: MemberExpression,
-  rightText: string,
-  sourceCode: SourceCode
+  element: Expression | Super,
+  value: Expression,
+  context: Rule.RuleContext
 ): Rule.SuggestionReportDescriptor[] {
   const suggestions: Rule.SuggestionReportDescriptor[] = [];
-  const leftText = sourceCode.getText(leftExpression.object);
+  const sourceCode = context.sourceCode;
+
+  const elText = context.sourceCode.getText(element);
+  const valueText = context.sourceCode.getText(value);
   const program = sourceCode.ast as Program;
 
   // Check if safevalues imports already exist
@@ -111,7 +115,7 @@ function getSuggestions(
       fixes.push(
         fixer.replaceText(
           node,
-          `setElementInnerHtml(${leftText}, sanitizeHtml(${rightText}))`
+          `setElementInnerHtml(${elText}, sanitizeHtml(${valueText}))`
         )
       );
 
@@ -123,7 +127,7 @@ function getSuggestions(
   suggestions.push({
     desc: 'Use textContent for plain text (XSS-safe)',
     fix: function (fixer: Rule.RuleFixer): Rule.Fix {
-      return fixer.replaceText(node, `${leftText}.textContent = ${rightText}`);
+      return fixer.replaceText(node, `${elText}.textContent = ${valueText}`);
     },
   });
 
