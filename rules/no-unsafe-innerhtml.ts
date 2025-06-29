@@ -28,8 +28,8 @@ const rule: Rule.RuleModule = {
       AssignmentExpression(node: AssignmentExpression): void {
         if (
           node.operator === '=' &&
-          node.left.type === 'MemberExpression' &&
-          node.left.property.type === 'Identifier' &&
+          isMemberExpression(node.left) &&
+          isIdentifier(node.left.property) &&
           node.left.property.name === 'innerHTML'
         ) {
           const sourceCode = context.sourceCode;
@@ -39,7 +39,7 @@ const rule: Rule.RuleModule = {
             node,
             message:
               'Unsafe innerHTML assignment. Consider using safevalues library for XSS protection.',
-            suggest: getSuggestions(node, rightText, sourceCode),
+            suggest: getSuggestions(node, node.left, rightText, sourceCode),
           });
         }
       },
@@ -53,13 +53,26 @@ function isIdentifier(node: Node): node is Identifier {
   return node.type === 'Identifier';
 }
 
+function isMemberExpression(node: Node): node is MemberExpression {
+  return node.type === 'MemberExpression';
+}
+
+function isImportDeclaration(node: Node): node is ImportDeclaration {
+  return node.type === 'ImportDeclaration';
+}
+
+function isImportSpecifier(node: Node): node is ImportSpecifier {
+  return node.type === 'ImportSpecifier';
+}
+
 function getSuggestions(
   node: AssignmentExpression,
+  leftExpression: MemberExpression,
   rightText: string,
   sourceCode: SourceCode
 ): Rule.SuggestionReportDescriptor[] {
   const suggestions: Rule.SuggestionReportDescriptor[] = [];
-  const leftText = sourceCode.getText((node.left as MemberExpression).object);
+  const leftText = sourceCode.getText(leftExpression.object);
   const program = sourceCode.ast as Program;
 
   // Check if safevalues imports already exist
@@ -123,13 +136,13 @@ function hasImport(
   importName: string
 ): boolean {
   return program.body.some((node: Node) => {
-    if (node.type !== 'ImportDeclaration' || node.source.value !== moduleName) {
+    if (!isImportDeclaration(node) || node.source.value !== moduleName) {
       return false;
     }
 
-    return (node as ImportDeclaration).specifiers.some((spec) => {
-      if (spec.type === 'ImportSpecifier') {
-        const imported = (spec as ImportSpecifier).imported;
+    return node.specifiers.some((spec) => {
+      if (isImportSpecifier(spec)) {
+        const imported = spec.imported;
         return isIdentifier(imported) && imported.name === importName;
       }
       return false;
