@@ -1,0 +1,10 @@
+
+@3º‹µš¥Û°V³ì£”ß±öëFë°jİĞCx=Ÿûèš|ÕófØzËíV”J0®Ä7äàM¢ÜÂ‡è¬3§Â@@ß›Ç ¼ÃT[`a] ïåeacbõo-$ºÂ·Ì;¢P÷˜ïp?p¹9wx=
+G¨Ô1Õ=u”
+	şÖğæû2x	€×ğæû2x/commit 6394f4f8eea0c0509f1b26f7d9b7e97d4e96c1c3"Damiens-Laptop.fritz.box*damien2¨
+argsŸjj commit -m 'Initial commit: ESLint plugin for unsafe innerHTML detection
+
+- Created eslint-plugin-no-unsafe-innerhtml with safevalues suggestions
+- Added comprehensive integration test suite  
+- Plugin detects innerHTML assignments and suggests secure alternatives
+- All tests passing'
