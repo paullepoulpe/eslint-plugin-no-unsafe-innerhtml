@@ -41,8 +41,12 @@ const rule: Rule.RuleModule = {
 
           context.report({
             node,
-            message:
-              'Unsafe innerHTML assignment. Consider using safevalues library for XSS protection.',
+            message: [
+              `Unsafe innerHTML assignment in ${
+                tsServices ? 'TypeScript' : 'JavaScript'
+              } code.`,
+              `Consider using safevalues library for XSS protection.`,
+            ].join(' '),
             suggest: getSuggestions(node, element, value, context),
           });
         }

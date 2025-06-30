@@ -55,7 +55,7 @@ ruleTester.run('no-unsafe-innerhtml', rule, {
     {
       code: 'element.innerHTML = userInput;',
       errors: [{
-        message: 'Unsafe innerHTML assignment. Consider using safevalues library for XSS protection.',
+        message: 'Unsafe innerHTML assignment in JavaScript code. Consider using safevalues library for XSS protection.',
         suggestions: [
           {
             desc: 'Use safevalues setElementInnerHtml() with sanitizeHtml()',
@@ -76,7 +76,7 @@ ruleTester.run('no-unsafe-innerhtml', rule, {
     {
       code: 'div.innerHTML = "<script>alert(1)</script>";',
       errors: [{
-        message: 'Unsafe innerHTML assignment. Consider using safevalues library for XSS protection.',
+        message: 'Unsafe innerHTML assignment in JavaScript code. Consider using safevalues library for XSS protection.',
         suggestions: [
           {
             desc: 'Use safevalues setElementInnerHtml() with sanitizeHtml()',
@@ -97,7 +97,7 @@ ruleTester.run('no-unsafe-innerhtml', rule, {
     {
       code: 'document.getElementById("test").innerHTML = htmlContent;',
       errors: [{
-        message: 'Unsafe innerHTML assignment. Consider using safevalues library for XSS protection.',
+        message: 'Unsafe innerHTML assignment in JavaScript code. Consider using safevalues library for XSS protection.',
         suggestions: [
           {
             desc: 'Use safevalues setElementInnerHtml() with sanitizeHtml()',
