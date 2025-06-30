@@ -33,4 +33,4 @@ jobs:
         run: npm test
       
       - name: Run integration tests
-        run: cd integration-test && npm ci && npm test
+        run: cd integration-tests && npm test
