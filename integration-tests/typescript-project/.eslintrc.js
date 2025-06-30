@@ -7,7 +7,9 @@ module.exports = {
   ],
   parserOptions: {
     ecmaVersion: 2020,
-    sourceType: 'module'
+    sourceType: 'module',
+    project: './tsconfig.json',
+    tsconfigRootDir: __dirname
   },
   rules: {
     'no-unsafe-innerhtml/no-unsafe-innerhtml': 'error',

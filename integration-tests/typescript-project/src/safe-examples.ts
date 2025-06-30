@@ -72,6 +72,35 @@ function processHtml(innerHTML: string): string {
   return innerHTML.trim(); // Safe - parameter, not assignment
 }
 
+// Safe: Non-Element objects with innerHTML property should not trigger
+interface CustomObject {
+  innerHTML: string;
+  customProperty: boolean;
+}
+
+class NonElementWithInnerHTML {
+  innerHTML: string = '';
+  
+  updateContent(content: string): void {
+    this.innerHTML = content; // Safe - not a DOM Element type
+  }
+}
+
+function updateCustomObject(obj: CustomObject, content: string): void {
+  obj.innerHTML = content; // Safe - not a DOM Element type
+}
+
+// Safe: Plain objects with innerHTML property
+const plainObject = {
+  innerHTML: '',
+  otherProperty: 42
+};
+
+function updatePlainObject(content: string): void {
+  plainObject.innerHTML = content; // Safe - not a DOM Element type
+}
+
+
 // Export to prevent TypeScript unused variable warnings
 export { 
   SafeComponentRenderer, 
@@ -79,5 +108,9 @@ export {
   createSafeElement, 
   generateCssClass, 
   innerHTML, 
-  processHtml 
+  processHtml,
+  NonElementWithInnerHTML,
+  updateCustomObject,
+  plainObject,
+  updatePlainObject
 };

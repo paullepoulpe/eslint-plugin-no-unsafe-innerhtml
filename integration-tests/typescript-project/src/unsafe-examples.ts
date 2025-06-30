@@ -61,5 +61,14 @@ function updateById(id: string, content: string): void {
   }
 }
 
+// Unsafe: Interface that DOM Elements can be assigned to
+interface StringWrapper {
+  innerHTML: string;
+}
+
+function updateStringWrapper(wrapper: StringWrapper, content: string): void {
+  wrapper.innerHTML = content; // Should be flagged when called with DOM elements
+}
+
 // Export to prevent TypeScript unused variable warnings
-export { ComponentRenderer, updateContent, displayData, renderTemplate, UnsafeRenderer, updateById };
+export { ComponentRenderer, updateContent, displayData, renderTemplate, UnsafeRenderer, updateById, updateStringWrapper };

@@ -1,4 +1,5 @@
 import { Rule } from 'eslint';
+import * as ts from 'typescript';
 import {
   Node,
   AssignmentExpression,
@@ -26,6 +27,15 @@ const rule: Rule.RuleModule = {
   },
 
   create(context: Rule.RuleContext): Rule.RuleListener {
+    // Set up TypeScript services once for the entire rule
+    const parserServices =
+      context.sourceCode.parserServices || context.parserServices;
+    const checker = parserServices?.program?.getTypeChecker();
+    const tsNodeMap = parserServices?.esTreeNodeToTSNodeMap;
+    const elementType = checker
+      ? resolveTypeFromName(checker, 'Element')
+      : null;
+
     return {
       AssignmentExpression(node: AssignmentExpression): void {
         if (
@@ -36,6 +46,19 @@ const rule: Rule.RuleModule = {
         ) {
           const element = node.left.object;
           const value = node.right;
+
+          // Use TypeScript type checking if available
+          const tsObject = tsNodeMap?.get(element);
+
+          if (tsObject) {
+            const type = checker.getTypeAtLocation(tsObject);
+
+            if (!checker.isTypeAssignableTo(elementType, type)) {
+              // Not an Element type, skip reporting
+              return;
+            }
+          }
+
           context.report({
             node,
             message:
@@ -152,4 +175,32 @@ function hasImport(
       return false;
     });
   });
+}
+
+/** Resolves a TypeScript type from its name (e.g., "HTMLElement", "Element") */
+function resolveTypeFromName(
+  checker: ts.TypeChecker,
+  typeName: string
+): ts.Type {
+  const symbol = checker.resolveName(
+    typeName,
+    undefined,
+    ts.SymbolFlags.Type,
+    false
+  );
+  if (!symbol) {
+    throw new Error(`Type "${typeName}" not found in TypeScript checker.`);
+  }
+
+  const symbolType = checker.getTypeOfSymbol(symbol);
+
+  // For DOM types, the symbol often represents the constructor
+  // Try to get the instance type from the constructor's return type
+  const constructSignatures = symbolType.getConstructSignatures();
+  if (constructSignatures.length > 0) {
+    return constructSignatures[0].getReturnType();
+  }
+
+  // If no construct signatures, return the type as-is
+  return symbolType;
 }
