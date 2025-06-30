@@ -1,4 +1,4 @@
-import noUnsafeInnerhtml from './rules/no-unsafe-innerhtml';
+import noUnsafeInnerhtml from './src/no-unsafe-innerhtml';
 
 const plugin = {
   rules: {

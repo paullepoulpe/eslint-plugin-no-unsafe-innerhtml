@@ -1,5 +1,5 @@
 import { RuleTester } from 'eslint';
-import rule from '../rules/no-unsafe-innerhtml';
+import rule from '../src/no-unsafe-innerhtml';
 
 function dedent(str: string): string {
   const lines = str.split('\n');
