@@ -8,7 +8,7 @@ import { Expression, Super } from 'estree';
 export interface TypeScriptServices {
   checker: ts.TypeChecker;
   tsNodeMap: Map<any, ts.Node>;
-  elementType: ts.Type | null;
+  elementType: ts.Type;
 }
 
 /**
@@ -44,13 +44,9 @@ export function isElementType(
 ): boolean {
   const { checker, tsNodeMap, elementType } = services;
 
-  if (!elementType) {
-    return true; // Default to checking if we can't determine type
-  }
-
   const tsNode = tsNodeMap.get(element);
   if (!tsNode) {
-    return true; // Default to checking if we can't find TS node
+    return true; // Assume is element type if no TypeScript node is found
   }
 
   const type = checker.getTypeAtLocation(tsNode);
@@ -64,7 +60,7 @@ export function isElementType(
 function resolveTypeFromName(
   checker: ts.TypeChecker,
   typeName: string
-): ts.Type | null {
+): ts.Type {
   const symbol = checker.resolveName(
     typeName,
     undefined,
